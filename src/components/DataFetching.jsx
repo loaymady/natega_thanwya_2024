@@ -89,7 +89,7 @@ const DataFetching = () => {
       {error && <p className="text-red-500">{error}</p>}
       {data && (
         <>
-          <div className="grid grid-cols-12 gap-4">
+          <form className="grid grid-cols-12 gap-4">
             <h1 className="col-span-12 text-center text-2xl font-bold text-[#ed1b24]">
               نتيجة الثانوية العامة 2024 بالإسم
             </h1>
@@ -114,7 +114,7 @@ const DataFetching = () => {
                 )}
               </button>
             </div>
-          </div>
+          </form>
           {results.length > 0 && (
             <div className="mt-4">
               {results[0].message ? (

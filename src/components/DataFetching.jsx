@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { ClipLoader } from "react-spinners";
+import { ClipLoader, BeatLoader } from "react-spinners";
 import JSZip from "jszip";
 
 const DataFetching = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
   const [data, setData] = useState(null);
   const [studentName, setStudentName] = useState("");
   const [results, setResults] = useState([]);
@@ -15,7 +16,6 @@ const DataFetching = () => {
       setError("");
 
       try {
-        // Fetch the ZIP file from the public folder with cache-busting header
         const response = await fetch("/natega.zip", {
           headers: {
             "Cache-Control": "no-cache",
@@ -28,19 +28,13 @@ const DataFetching = () => {
         }
 
         const blob = await response.blob();
-
-        // Extract files from the ZIP using JSZip
         const zip = new JSZip();
         const zipFiles = await zip.loadAsync(blob);
-
-        // Log the extracted files
-        console.log("Extracted files:", zipFiles);
 
         if (!zipFiles || Object.keys(zipFiles.files).length === 0) {
           throw new Error("No files found in the ZIP archive.");
         }
 
-        // Find the JSON file
         const jsonFile = zipFiles.files["natega.json"];
 
         if (jsonFile) {
@@ -66,17 +60,23 @@ const DataFetching = () => {
       return;
     }
 
-    if (data) {
-      const foundResults = data.filter((item) =>
-        item["الاسم"].startsWith(studentName)
-      );
+    setIsSearching(true);
 
-      setResults(
-        foundResults.length > 0
-          ? foundResults
-          : [{ message: "No results found" }]
-      );
-    }
+    setTimeout(() => {
+      if (data) {
+        const foundResults = data.filter((item) =>
+          item["الاسم"].startsWith(studentName)
+        );
+
+        setResults(
+          foundResults.length > 0
+            ? foundResults
+            : [{ message: "No results found" }]
+        );
+      }
+
+      setIsSearching(false);
+    }, 1000); // Simulate network delay for demonstration
   };
 
   return (
@@ -104,9 +104,14 @@ const DataFetching = () => {
               />
               <button
                 onClick={handleSearch}
-                className="col-span-4 bg-slate-700 text-white p-2 rounded"
+                className="col-span-4 bg-slate-700 text-white p-2 rounded flex items-center justify-center"
+                disabled={isSearching}
               >
-                النتيجة
+                {isSearching ? (
+                  <BeatLoader color={"#fff"} size={8} />
+                ) : (
+                  "النتيجة"
+                )}
               </button>
             </div>
           </div>

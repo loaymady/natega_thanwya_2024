@@ -16,14 +16,7 @@ const DataFetching = () => {
       setError("");
 
       try {
-        const response = await fetch(
-          "/natega.zip"
-          //   , {
-          //   headers: {
-          //     "Cache-Control": "no-cache",
-          //   },
-          // }
-        );
+        const response = await fetch("/natega.zip");
         if (!response.ok) {
           throw new Error(
             `Failed to fetch the ZIP file: ${response.statusText}`
@@ -57,6 +50,16 @@ const DataFetching = () => {
     fetchFile();
   }, []);
 
+  const normalizeString = (str) => {
+    return str
+      .replace(/أ/g, "ا")
+      .replace(/إ/g, "ا")
+      .replace(/آ/g, "ا")
+      .replace(/ى/g, "ي")
+      .replace(/ئ/g, "ي")
+      .replace(/ؤ/g, "و");
+  };
+
   const handleSearch = () => {
     if (!studentName) {
       alert("Please enter a student name");
@@ -67,8 +70,9 @@ const DataFetching = () => {
 
     setTimeout(() => {
       if (data) {
+        const normalizedSearchName = normalizeString(studentName);
         const foundResults = data.filter((item) =>
-          item["الاسم"].startsWith(studentName)
+          normalizeString(item["الاسم"]).startsWith(normalizedSearchName)
         );
 
         setResults(

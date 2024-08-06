@@ -16,11 +16,14 @@ const DataFetching = () => {
       setError("");
 
       try {
-        const response = await fetch("/natega.zip", {
-          headers: {
-            "Cache-Control": "no-cache",
-          },
-        });
+        const response = await fetch(
+          "/natega.zip"
+          //   , {
+          //   headers: {
+          //     "Cache-Control": "no-cache",
+          //   },
+          // }
+        );
         if (!response.ok) {
           throw new Error(
             `Failed to fetch the ZIP file: ${response.statusText}`
